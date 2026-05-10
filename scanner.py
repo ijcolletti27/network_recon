@@ -1,6 +1,15 @@
-import socket
-from ssl import socket_error
+"""
+Port scanning function
 
+This script allows the user to scan a port on a specific host.
+
+Utilizes socket library.
+
+Author: Isaac Colletti
+Last updated: 5/10/2026
+"""
+
+import socket
 
 def scan_port(host, port):
         """
