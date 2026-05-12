@@ -1,12 +1,13 @@
 """
 Port scanning function
 
-This script allows the user to scan a port on a specific host.
+This script provides functions for performing basic network reconnaissance, i.e. determining
+if a host/port pair is listening.
 
 Utilizes socket library.
 
 Author: Isaac Colletti
-Last updated: 5/10/2026
+Last updated: 5/11/2026
 """
 
 import socket
@@ -20,7 +21,6 @@ def scan_port(host, port):
         Target hostname or IP address
     :param port: int
         Target port number
-
     :return: dict
         Scan results
     """
@@ -59,3 +59,27 @@ def scan_port(host, port):
         result_data["error"] = str(e)
 
     return result_data
+
+
+def scan_port_range(host, start_port, end_port):
+    """
+    Scans a range of ports on a target host.
+
+    :param host: str
+        Target hostname or IP address
+    :param start_port: int
+        Start port for the range
+    :param end_port: int
+        Ending port number for the range
+    :return: list
+        list of dictionaries of scan results
+    """
+
+    results_list = []
+
+    # scan each port in the range and add to results_list
+    for port in range(start_port, end_port + 1):
+        result = scan_port(host, port)
+        results_list.append(result)
+
+    return results_list

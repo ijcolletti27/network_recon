@@ -1,13 +1,15 @@
 """
 Network reconnaissance tool
 
-Utilizes scan_port function to scan a user-provided port number on a user-provided host.
+Utilizes scan_port function to scan a user-provided port range on a user-provided host.
 
 Author: Isaac Colletti
-Last Updated: 5/10/2026
+Last Updated: 5/11/2026
 """
 
-from scanner import scan_port
+from scanner import scan_port_range
+
+from utils import print_scan_results, verify_port_range, get_integer_input
 
 
 def main():
@@ -21,19 +23,16 @@ def main():
 
     # Get target values from user
     host_name = input("Enter target host: ")
-    port_number = int(input("Enter target port: "))
+    start_port = get_integer_input("Enter starting port: ")
+    end_port = get_integer_input("Enter ending port: ")
 
-    # scan host/port pair
-    results = scan_port(host_name, port_number)
+    # Verify range
+    start_port, end_port = verify_port_range(start_port, end_port)
 
-    # print results
-    print("=== Scan Results ===")
-    print(f"Host: {results['host']}\nPort: {results['port']}\nOpen: {results['open']}")
-    if results['error'] is not None:
-        print(f"Error: {results['error']}")
+    # Scan over the specified range and print results
+    results = scan_port_range(host_name, start_port, end_port)
+    print_scan_results(results)
+
 
 if __name__ == "__main__":
     main()
-
-
-
