@@ -2,7 +2,7 @@
 Helper functions for main.py
 
 Author: Isaac Colletti
-Last Updated: 5/11/2026
+Last Updated: 5/12/2026
 """
 
 def print_scan_results(results_list):
