@@ -14,6 +14,8 @@ def print_scan_results(results_list):
     :return: None
     """
 
+    print("=== Scan Complete ===")
+
     # Get user print preferences
     print_selector = get_integer_input("Type 1 to only show open ports, 2 to show all "
                                        "scan results: ")
@@ -28,8 +30,6 @@ def print_scan_results(results_list):
 
         elif print_selector == 2:
             print_individual_scan(result)
-
-    print("=== Scan Complete ===")
 
 
 def print_individual_scan(result):
