@@ -7,10 +7,12 @@ if a host/port pair is listening.
 Utilizes socket library.
 
 Author: Isaac Colletti
-Last updated: 5/11/2026
+Last updated: 5/12/2026
 """
 
 import socket
+
+import concurrent.futures
 
 
 def scan_port(host, port):
@@ -26,11 +28,13 @@ def scan_port(host, port):
     """
 
     result_data = {
-        "host" : host,
-        "port" : port,
-        "open" : False,
-        "error" : None
+        "host": host,
+        "port": port,
+        "open": False,
+        "error": None
     }
+
+    sock = None
 
     try:
         # create a TCP socket using IPv4
@@ -41,9 +45,6 @@ def scan_port(host, port):
 
         # attempt connection
         result = sock.connect_ex((host, port))
-
-        # close socket
-        sock.close()
 
         # successful connection
         if result == 0:
@@ -58,12 +59,16 @@ def scan_port(host, port):
     except socket.error as e:
         result_data["error"] = str(e)
 
+    finally:
+        if sock is not None:
+            sock.close()
+
     return result_data
 
 
 def scan_port_range(host, start_port, end_port):
     """
-    Scans a range of ports on a target host.
+    Scans a range of ports concurrently on a target host.
 
     :param host: str
         Target hostname or IP address
@@ -77,9 +82,22 @@ def scan_port_range(host, start_port, end_port):
 
     results_list = []
 
-    # scan each port in the range and add to results_list
-    for port in range(start_port, end_port + 1):
-        result = scan_port(host, port)
-        results_list.append(result)
+    # Create pool of worker threads
+    executor = concurrent.futures.ThreadPoolExecutor(max_workers=100)
+
+    try:
+        # submit scans for each port and map each to a Future object
+        future_to_port = {
+            executor.submit(scan_port, host, port): port
+            for port in range(start_port, end_port + 1)
+        }
+
+        # get results as they finish
+        for future in concurrent.futures.as_completed(future_to_port):
+            results_list.append(future.result())
+
+    finally:
+        # Begin cleanup without waiting for all worker threads to finish
+        executor.shutdown(wait=False)
 
     return results_list
