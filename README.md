@@ -66,7 +66,7 @@ docker build -t network_recon .
 #### Run container
 
 ```bash
-docker run -it network_recon
+docker run --rm -it network_recon
 ```
 
 #### Example Docker Scan
